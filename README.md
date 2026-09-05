@@ -1,13 +1,18 @@
 CICD-FOR-TEST/
-├── README.md               <-- Root README for GitHub (docs/overview of the repo)
-├── App/                    <-- App folder dedicated to Hugging Face deployment ,
-│                              for adding web app classifier file, app README file with metadata, and requirement.txt │                              for installing necessary packages.
-│   ├── README.md           <-- THIS is where the HF metadata goes!
-│   ├── drug_app.py         <-- Your Gradio app script
-│   └── requirements.txt    <-- Dependencies specifically needed for HF Space
-├── Data/
-├── Model/                 <-- saving trained model file
-└── Results/               <-- for saving metrics and result 
+    ├── README.md               <-- Root README for GitHub (docs/overview of the repo)
+    ├── App/                    <-- App folder dedicated to Hugging Face deployment
+    │   ├── README.md           <-- THIS is where the HF metadata goes!
+    │   ├── drug_app.py         <-- Your Gradio app script
+    │   └── requirements.txt    <-- Dependencies specifically needed for HF Space
+    ├── data/
+    ├── model/                 <-- saving trained model file
+    ├── results/               <-- for saving metrics and result 
+    ├── experiment.ipynb
+    ├── train.py                <-- model runner script
+    ├──.makefile               <-- set of instructions used by make command to automate various tasks
+    
+
+
 
 
 # notice
