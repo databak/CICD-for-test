@@ -1,0 +1,62 @@
+name: Model Training and Evaluation (CI)
+
+# 1. Triggers: Run on push to main, on pull requests, or manually via UI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Permissions needed so CML can post a comment back to your PR/Commit
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  train-and-evaluate:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Clone your GitHub repo into the runner
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Install uv for fast Python & dependency management
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+
+      # Step 3: Set up Python version
+      - name: Set up Python
+        run: uv python install 3.10
+
+      # Step 4: Install project dependencies directly via uv
+      - name: Install dependencies
+        run: |
+          uv sync
+
+      # Step 5: Execute training script (trains model, saves metrics & cm.png)
+      - name: Run model training
+        run: |
+          uv run python train.py
+
+      # Step 6: Setup CML (Continuous Machine Learning)
+      - name: Setup CML
+        uses: iterative/setup-cml@v2
+
+      # Step 7: Post metrics and confusion matrix directly on GitHub
+      - name: Publish evaluation report
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "## Model Performance" > report.md
+          cat result/metrics.txt >> report.md
+          echo "" >> report.md
+          echo "## Confusion Matrix" >> report.md
+          echo '![](./result/cm.png "Confusion Matrix")' >> report.md
+          
+          # Post the markdown as a comment on GitHub
+          cml comment create report.md
